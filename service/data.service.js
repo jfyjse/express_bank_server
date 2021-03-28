@@ -6,7 +6,7 @@ let accountDetails= {
     1004: { accno: 1004, name: "jinjin", balance: 61000, password: "user5" },
   }
 
-
+let currentUser;
 
 const  register = (accno, password) => {
 
@@ -42,7 +42,51 @@ const  register = (accno, password) => {
 
   }
 
+  const login= (accno,pwd)=>{
+
+    var data = accountDetails;
+
+    if (accno in data) {
+      var psw1 = data[accno].password;
+      if (pwd == psw1) {
+        
+        // console.log("login success");
+        var userl= data[accno].name;
+        currentUser=userl;
+        // currentUser=userl;
+        return {
+            status:true,
+            message:"login suuc"
+        }
+    
+
+      }
+      else {
+        // console.log("inncorrect pswd");
+        // return false;
+        return{
+            status:false,
+            message:"pwd error"
+        } 
+  
+
+      }
+    }
+    else {
+    //   console.log("no user account");
+    //   return false;
+    return{
+        status:false,
+        message:"no acc"
+    } 
+
+
+    }
+  }
+
+
+
   module.exports=
   {
-      register
+      register, login
   }

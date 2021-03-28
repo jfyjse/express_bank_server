@@ -17,6 +17,13 @@ app.post('/register',(req,res)=>
     console.log(res.send(result.message));
     
 })
+app.post('/login',(req,res)=>
+{
+    console.log(req.body);
+    const result= dataser.login(req.body.accno,req.body.pwd)
+    console.log(res.send(result.message));
+    
+})
 
 app.put('/',(req,res)=>{
     res.send("put")
