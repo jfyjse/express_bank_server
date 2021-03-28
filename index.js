@@ -1,8 +1,21 @@
-
+const {json} = require('express');
 const express = require('express');
 const app = express();
+
+const dataser= require('./service/data.service')
+
+app.use(express.json());
+
 app.get('/',(req,res)=>{
-    res.send("get")
+    res.status(222).send("get methd updated")
+})
+
+app.post('/register',(req,res)=>
+{
+    console.log(req.body);
+    const result= dataser.register(req.body.accno,req.body.password)
+    console.log(res.send(result.message));
+    
 })
 
 app.put('/',(req,res)=>{
@@ -10,10 +23,6 @@ app.put('/',(req,res)=>{
 })
 
 
-app.post('/',(req,res)=>
-{
-   res.send("post") 
-})
 
 app.patch('/',(req,res)=>
 {
