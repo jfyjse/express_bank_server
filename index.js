@@ -5,6 +5,31 @@ const session = require('express-session')
 const dataser= require('./service/data.service')
 
 app.use(express.json());
+
+const logMiddleware = (req,res, next)=>
+{
+    console.log(req.body);
+    next();
+}
+
+app.use(logMiddleware);
+
+const authMiddleware =(req,res,next)=>
+{
+    if (!req.session.currentUser) {
+        return res.json ({
+          status: false,
+          statusCode: 441,
+          message: "pls login"
+        })
+    
+      }
+      else{
+          next();
+      }
+}
+
+
 app.use(session(
 {
     secret:'randomsecurestring',
@@ -18,7 +43,7 @@ app.get('/',(req,res)=>{
 
 app.post('/register',(req,res)=>
 {
-    console.log(req.body);
+    // console.log(req.body);
     const result= dataser.register(req.body.accno,req.body.pwd)
     // console.log(res.send(result.message));
     res.status(result.statusCode)
@@ -27,7 +52,7 @@ app.post('/register',(req,res)=>
 })
 app.post('/login',(req,res)=>
 {
-    console.log(req.body);
+    // console.log(req.body);
     console.log(req.session.currentUser);
     const result= dataser.login(req,req.body.accno,req.body.pwd)
     // console.log(res.send(result.message));
@@ -36,9 +61,9 @@ app.post('/login',(req,res)=>
     
 })
 
-app.post('/deposit',(req,res)=>
+app.post('/deposit',authMiddleware,(req,res)=>
 {
-    console.log(req.body);
+    // console.log(req.body);
     const result= dataser.deposit(req,req.body.accno,req.body.pwd,req.body.amt)
     // console.log(res.send(result.message));
     res.status(result.statusCode)
@@ -46,9 +71,9 @@ app.post('/deposit',(req,res)=>
     
 })
 
-app.post('/withdraw',(req,res)=>
+app.post('/withdraw',authMiddleware,(req,res)=>
 {
-    console.log(req.body);
+    // console.log(req.body);
     const result= dataser.withdraw(req.body.accno,req.body.pwd,req.body.amt)
     // console.log(res.send(result.message));
     res.status(result.statusCode)

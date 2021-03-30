@@ -91,14 +91,7 @@ const login = (req, accno, pwd) => {
 
 
 const deposit = (req, accno, pwd, amt) => {
-  if (!req.session.currentUser) {
-    return {
-      status: false,
-      statusCode: 441,
-      message: "pls login"
-    }
-
-  }
+  
   var ammt = parseInt(amt)
   var data = accountDetails;
 
