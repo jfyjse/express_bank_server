@@ -1,3 +1,5 @@
+const db = require('./db')
+
 let accountDetails = {
   1000: { accno: 1000, name: "kanappi", balance: 6000, password: "user1" },
   1001: { accno: 1001, name: "dybala", balance: 9000, password: "user2" },
@@ -8,40 +10,44 @@ let accountDetails = {
 
 let currentUser;
 
+
+
 const register = (accno, password) => {
 
   console.log("register called");
+  return db.User.findOne({ accno }).then(user => {
+    console.log(user);
+    if(user)
+    {
+      return {
+        status: false,
+        statusCode: 445,
+        message: "user exist log in"
+      }
 
-  if (accno in accountDetails) {
-    //   console.log("user exist log in");
-    //   alert("please login")
-
-    return {
-      status: false,
-      statusCode: 445,
-      message: "user exist log in"
     }
 
-  }
+    else{
+      const newUser= new db.User({
+        accno,
+        name: "new useer",
+        balance: 0,
+        password
+      })
 
-  accountDetails[accno] = {
-    accno,
-    name: "new useer",
-    balance: 0,
-    password
-  }
+      newUser.save()
+
+      return {
+        status: true,
+        statusCode: 200,
+        message: "registered suuc"
+      }
+    }
+  })
 
 
-  // alert("reg success")
-  // console.log(this.accountDetails);
-  // this.saveDetails()
 
-  return {
-    status: true,
-    statusCode: 200,
-    message: "registered suuc"
-  }
-
+ 
 }
 
 const login = (req, accno, pwd) => {
@@ -91,7 +97,7 @@ const login = (req, accno, pwd) => {
 
 
 const deposit = (req, accno, pwd, amt) => {
-  
+
   var ammt = parseInt(amt)
   var data = accountDetails;
 

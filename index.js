@@ -44,10 +44,14 @@ app.get('/',(req,res)=>{
 app.post('/register',(req,res)=>
 {
     // console.log(req.body);
-    const result= dataser.register(req.body.accno,req.body.pwd)
+    //  dataser.register(req.body.accno,req.body.pwd)
     // console.log(res.send(result.message));
-    res.status(result.statusCode)
-    console.log(res.json(result));
+    const result= dataser.register(req.body.accno,req.body.pwd)
+    .then(result=>{res.status(result.statusCode).json(result)
+    })
+    // res.status(200).send("Success")
+    // res.status(result.statusCode)
+    // console.log(res.json(result));
     
 })
 app.post('/login',(req,res)=>
