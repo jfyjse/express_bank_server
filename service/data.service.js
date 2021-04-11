@@ -52,47 +52,31 @@ const register = (accno, password) => {
 
 const login = (req, accno, pwd) => {
 
-  var data = accountDetails;
-
-  if (accno in data) {
-    var psw1 = data[accno].password;
-    if (pwd == psw1) {
-
-      // console.log("login success");
-      // var userl = data[accno].name;
-      req.session.currentUser = data[accno].name;
-      // currentUser=userl;
-      return {
-        status: true,
+  accno=parseInt(accno);
+  console.log("login");
+  return db.User.findOne({accno, password :pwd}).then(logi =>{
+    if(logi)
+    {
+      req.session.currentUser = accno;
+      return{
+        status : true,
         statusCode: 200,
-        message: "login suuc"
+        message: "log succ"
       }
-
-
     }
-    else {
-      // console.log("inncorrect pswd");
-      // return false;
-      return {
+
+    else
+    {
+      return{
         status: false,
         statusCode: 445,
-        message: "pwd error"
+        message: "invalid ac or pwd"
+
       }
-
-
     }
-  }
-  else {
-    //   console.log("no user account");
-    //   return false;
-    return {
-      status: false,
-      statusCode: 445,
-      message: "no acc"
-    }
+  })
 
-
-  }
+  
 }
 
 
