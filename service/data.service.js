@@ -17,8 +17,7 @@ const register = (accno, password) => {
   console.log("register called");
   return db.User.findOne({ accno }).then(user => {
     console.log(user);
-    if(user)
-    {
+    if (user) {
       return {
         status: false,
         statusCode: 445,
@@ -27,8 +26,8 @@ const register = (accno, password) => {
 
     }
 
-    else{
-      const newUser= new db.User({
+    else {
+      const newUser = new db.User({
         accno,
         name: "new useer",
         balance: 0,
@@ -47,27 +46,25 @@ const register = (accno, password) => {
 
 
 
- 
+
 }
 
 const login = (req, accno, pwd) => {
 
-  accno=parseInt(accno);
+  accno = parseInt(accno);
   console.log("login");
-  return db.User.findOne({accno, password :pwd}).then(logi =>{
-    if(logi)
-    {
+  return db.User.findOne({ accno, password: pwd }).then(logi => {
+    if (logi) {
       req.session.currentUser = accno;
-      return{
-        status : true,
+      return {
+        status: true,
         statusCode: 200,
         message: "log succ"
       }
     }
 
-    else
-    {
-      return{
+    else {
+      return {
         status: false,
         statusCode: 445,
         message: "invalid ac or pwd"
@@ -76,103 +73,68 @@ const login = (req, accno, pwd) => {
     }
   })
 
-  
+
 }
 
 
-const deposit = (req, accno, pwd, amt) => {
+deposit = (accno, pwd, amt) => {
 
   var ammt = parseInt(amt)
-  var data = accountDetails;
-
-  if (accno in data) {
-    var psw1 = data[accno].password;
-    if (pwd == psw1) {
-
-      console.log("login success");
-      data[accno].balance += ammt;
-
-
-      // alert("acc credited wit :"+amt+" new bal= " + data[accno].balance) 
-      return {
-        status: true,
-        statusCode: 200,
-        message: "credited " + amt + " bal " + data[accno].balance
-      }
-
-
-    }
-    else {
-      // console.log("inncorrect pswd");
+  return db.User.findOne({ accno: accno, password: pwd }).then(uss => {
+    if (!uss) {
       return {
         status: false,
-        statusCode: 445,
-        message: "pwd err"
+        statusCode: 455,
+        message: "invalid acc or pwd"
       }
-
-
     }
-  }
-  else {
-    // console.log("no user account");
-    return {
-      status: false,
-      statusCode: 445,
-      message: "pwd err"
+    else {
+      uss.balance += ammt;
+      uss.save();
+      return {
+        status: true,
+        statusCode: 455,
+        message: "amt " +ammt+ " : credited, current balance : " + uss.balance
+      }
     }
+  })
 
-
-  }
 
 }
 
-const withdraw = (accno, pwd, amt) => {
+withdraw = (accno, pwd, amt) => {
   var ammt = parseInt(amt)
-  var data = accountDetails;
 
-  if (accno in data) {
-    var psw1 = data[accno].password;
-    if (pwd == psw1) {
-
-      // console.log("login success");
-      if ((data[accno].balance) < ammt) {
+  return db.User.findOne({ accno: accno, password: pwd }).then(uss => {
+    if (!uss) {
+      return {
+        status: false,
+        statusCode: 455,
+        message: "invalid acc or pwd"
+      }
+    }
+    else {
+      if (uss.balance < ammt) {
         return {
           status: false,
-          statusCode: 445,
+          statusCode: 455,
           message: "no money"
         }
+
       }
       else {
-        data[accno].balance -= ammt;
-        // alert("acc debited wit :"+amt+" new bal= " + data[accno].balance);
+        uss.balance -= ammt;
+        uss.save();
         return {
           status: true,
           statusCode: 200,
-          message: "debited " + amt + " bal " + data[accno].balance
+          message: "amt " +ammt+ " : debited, current balance : " + uss.balance
         }
-      }
-    }
-    else {
-      // console.log("inncorrect pswd");
-      return {
-        status: false,
-        statusCode: 445,
-        message: "pwd err"
+
       }
 
-
     }
-  }
-  else {
-    // console.log("no user account");
-    return {
-      status: false,
-      statusCode: 445,
-      message: "no accc"
-    }
-
-
-  }
+  })
 }
 
 

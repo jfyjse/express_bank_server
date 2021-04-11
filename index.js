@@ -62,21 +62,18 @@ app.post('/login',(req,res)=>
 
 app.post('/deposit',authMiddleware,(req,res)=>
 {
-    // console.log(req.body);
-    const result= dataser.deposit(req,req.body.accno,req.body.pwd,req.body.amt)
-    // console.log(res.send(result.message));
-    res.status(result.statusCode)
-    console.log(res.json(result));
+   dataser.deposit(req.body.accno,req.body.pwd,req.body.amt).then(ress =>{
+       res.status(ress.statusCode).json(ress)
+   })
+    
     
 })
 
 app.post('/withdraw',authMiddleware,(req,res)=>
 {
-    // console.log(req.body);
-    const result= dataser.withdraw(req.body.accno,req.body.pwd,req.body.amt)
-    // console.log(res.send(result.message));
-    res.status(result.statusCode)
-    console.log(res.json(result));
+    dataser.withdraw(req.body.accno,req.body.pwd,req.body.amt).then(ress =>{
+        res.status(ress.statusCode).json(ress)
+    })
     
 })
 
