@@ -55,11 +55,13 @@ const login = (req, accno, pwd) => {
   console.log("login");
   return db.User.findOne({ accno, password: pwd }).then(logi => {
     if (logi) {
-      req.session.currentUser = accno;
+      req.session.currentUser = logi;
       return {
         status: true,
         statusCode: 200,
-        message: "log succ"
+        message: "log succ",
+        name: logi.name,
+        bal:logi.balance
       }
     }
 

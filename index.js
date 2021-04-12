@@ -3,6 +3,12 @@ const express = require('express');
 const app = express();
 const session = require('express-session')
 const dataser= require('./service/data.service')
+const cors= require('cors')
+
+app.use(cors({
+    origin: "http://localhost:4200",
+    credentials: true
+}))
 
 app.use(express.json());
 
