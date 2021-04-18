@@ -55,7 +55,7 @@ const login = (req, accno, pwd) => {
   console.log("login");
   return db.User.findOne({ accno, password: pwd }).then(logi => {
     if (logi) {
-      req.session.currentUser = logi;
+      req.session.currentUser = logi.accno;
       return {
         status: true,
         statusCode: 200,
@@ -104,7 +104,7 @@ deposit = (accno, pwd, amt) => {
 
 }
 
-withdraw = (accno, pwd, amt) => {
+withdraw = (req,accno, pwd, amt) => {
   var ammt = parseInt(amt)
 
   return db.User.findOne({ accno: accno, password: pwd }).then(uss => {
@@ -116,25 +116,38 @@ withdraw = (accno, pwd, amt) => {
       }
     }
     else {
-      if (uss.balance < ammt) {
-        return {
-          status: false,
-          statusCode: 455,
-          message: "no money"
+
+      if(req.session.currentUser !=accno){
+        return{
+          status:false,
+          statusCode:455,
+          message:"permison not found"
         }
+      }
+      else{
+        if (uss.balance < ammt) {
+          return {
+            status: false,
+            statusCode: 455,
+            message: "no money"
+          }
+  
+        }
+        else {
+          uss.balance -= ammt;
+          uss.save();
+          return {
+            status: true,
+            statusCode: 200,
+            message: "amt " +ammt+ " : debited, current balance : " + uss.balance
+          }
+  
+        }
+  
 
       }
-      else {
-        uss.balance -= ammt;
-        uss.save();
-        return {
-          status: true,
-          statusCode: 200,
-          message: "amt " +ammt+ " : debited, current balance : " + uss.balance
-        }
 
-      }
-
+     
     }
   })
 }

@@ -77,7 +77,7 @@ app.post('/deposit',authMiddleware,(req,res)=>
 
 app.post('/withdraw',authMiddleware,(req,res)=>
 {
-    dataser.withdraw(req.body.accno,req.body.pwd,req.body.amt).then(ress =>{
+    dataser.withdraw(req,req.body.accno,req.body.pwd,req.body.amt).then(ress =>{
         res.status(ress.statusCode).json(ress)
     })
     
